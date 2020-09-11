@@ -20,8 +20,8 @@ env = Environment()
 def test_cisco_asa_traditional(
     record_property, setup_wordlist, setup_splunk, setup_sc4s
 ):
-    host = "{}-{}".format(random.choice(setup_wordlist), random.choice(setup_wordlist))
-
+    #host = "{}-{}".format(random.choice(setup_wordlist), random.choice(setup_wordlist))
+    host = "172.16.51.51"
     dt = datetime.datetime.now()
     iso, bsd, time, date, tzoffset, tzname, epoch = time_operations(dt)
 
@@ -84,8 +84,8 @@ def test_cisco_asa_traditional_nohost(
 
 # <166>2018-06-27T12:17:46Z asa : %ASA-3-710003: TCP access denied by ACL from 179.236.133.160/8949 to outside:72.142.18.38/23
 def test_cisco_asa_rfc5424(record_property, setup_wordlist, setup_splunk, setup_sc4s):
-    host = "{}-{}".format(random.choice(setup_wordlist), random.choice(setup_wordlist))
-
+    #host = "{}-{}".format(random.choice(setup_wordlist), random.choice(setup_wordlist))
+    host = "172.16.51.52"
     #   Get UTC-based 'dt' time structure
     dt = datetime.datetime.now(datetime.timezone.utc)
     iso, bsd, time, date, tzoffset, tzname, epoch = time_operations(dt)
