@@ -62,7 +62,7 @@ def test_cisco_asa_traditional_nohost(
     epoch = epoch[:-7]
 
     mt = env.from_string(
-        "{{ mark }} {{ bsd }}: %ASA-4-402119: IPSEC: Received an ESP packet (SPI= 0x0C190BF9, sequence number= 0x598243) from {{host}} (user= 192.0.0.1) to 192.0.0.2 that failed anti-replay checking.\n"
+        "{{ mark }}{{ bsd }}: %ASA-4-402119: IPSEC: Received an ESP packet (SPI= 0x0C190BF9, sequence number= 0x598243) from {{host}} (user= 192.0.0.1) to 192.0.0.2 that failed anti-replay checking.\n"
     )
     message = mt.render(mark="<111>", bsd=bsd, host=host)
 
@@ -96,7 +96,7 @@ def test_cisco_asa_rfc5424(record_property, setup_wordlist, setup_splunk, setup_
     epoch = epoch[:-7]
 
     mt = env.from_string(
-        "{{ mark }} {{ iso }}Z {{ host }} : %ASA-3-005424: TCP access denied by ACL from 179.236.133.160/5424 to outside:72.142.18.38/23 epoch={{ epoch }}\n"
+        "{{ mark }}{{ iso }}Z {{ host }} : %ASA-3-005424: TCP access denied by ACL from 179.236.133.160/5424 to outside:72.142.18.38/23 epoch={{ epoch }}\n"
     )
     message = mt.render(mark="<166>", iso=iso, epoch=epoch, host=host)
 
@@ -130,7 +130,7 @@ def test_cisco_ftd(record_property, setup_wordlist, setup_splunk, setup_sc4s):
     epoch = epoch[:-7]
 
     mt = env.from_string(
-        "{{ mark }} {{ iso }}Z {{ host }} : %FTD-6-430003: DeviceUUID: 90e14378-2081-11e8-a7fa-d34972ba379f, AccessControlRuleAction: Allow, SrcIP: 75.150.94.75, DstIP: 172.30.0.2, SrcPort: 59698, DstPort: 8027, Protocol: tcp, IngressInterface: Outside2, EgressInterface: DMZ, IngressZone: Outside, EgressZone: DMZ, ACPolicy: Rapid7 5525X, AccessControlRuleName: Allow MDM - Out to DMZ, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, ConnectionDuration: 600, InitiatorPackets: 0, ResponderPackets: 0, InitiatorBytes: 31, ResponderBytes: 0, NAPPolicy: Balanced Security and Connectivity\n"
+        "{{ mark }}{{ iso }}Z {{ host }} : %FTD-6-430003: DeviceUUID: 90e14378-2081-11e8-a7fa-d34972ba379f, AccessControlRuleAction: Allow, SrcIP: 75.150.94.75, DstIP: 172.30.0.2, SrcPort: 59698, DstPort: 8027, Protocol: tcp, IngressInterface: Outside2, EgressInterface: DMZ, IngressZone: Outside, EgressZone: DMZ, ACPolicy: Rapid7 5525X, AccessControlRuleName: Allow MDM - Out to DMZ, Prefilter Policy: Default Prefilter Policy, User: No Authentication Required, ConnectionDuration: 600, InitiatorPackets: 0, ResponderPackets: 0, InitiatorBytes: 31, ResponderBytes: 0, NAPPolicy: Balanced Security and Connectivity\n"
     )
     message = mt.render(mark="<166>", iso=iso, epoch=epoch, host=host)
 
