@@ -63,7 +63,7 @@ testdata_json = [
 def test_f5_bigip_nix(
     record_property, setup_wordlist, get_host_key, setup_splunk, setup_sc4s, event
 ):
-    host = "test_f5-" + get_host_key
+    host = "test-f5-" + get_host_key
 
     dt = datetime.datetime.now()
     iso, bsd, time, date, tzoffset, tzname, epoch = time_operations(dt)
@@ -94,7 +94,7 @@ def test_f5_bigip_nix(
 def test_f5_bigip_app(
     record_property, setup_wordlist, get_host_key, setup_splunk, setup_sc4s, event
 ):
-    host = "test_f5-" + get_host_key
+    host = "test-f5-" + get_host_key
 
     dt = datetime.datetime.now()
     iso, bsd, time, date, tzoffset, tzname, epoch = time_operations(dt)
@@ -124,7 +124,7 @@ def test_f5_bigip_app(
 def test_f5_bigip_syslog(
     record_property, setup_wordlist, get_host_key, setup_splunk, setup_sc4s, event
 ):
-    host = "test_f5-" + get_host_key
+    host = "test-f5-" + get_host_key
 
     dt = datetime.datetime.now()
     iso, bsd, time, date, tzoffset, tzname, epoch = time_operations(dt)
@@ -154,7 +154,7 @@ def test_f5_bigip_syslog(
 def test_f5_bigip_irule(
     record_property, setup_wordlist, get_host_key, setup_splunk, setup_sc4s, event
 ):
-    host = "test_f5-" + get_host_key
+    host = "test-f5-" + get_host_key
 
     dt = datetime.datetime.now()
     iso, bsd, time, date, tzoffset, tzname, epoch = time_operations(dt)
