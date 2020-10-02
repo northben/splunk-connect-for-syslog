@@ -216,7 +216,7 @@ source s_{{ .port_id }} {
                 rewrite(set_rfc3164_json);              
             };
         };
-{{- end }}
+
         rewrite(r_set_splunk_default);
         {{ if eq (getenv "SC4S_USE_REVERSE_DNS" "no") "yes" }}
         if {
