@@ -94,6 +94,15 @@ source s_{{ .port_id }} {
 {{- end }}  
         };
         if {
+            filter(f_rfc5424_strict);
+            if {
+                parser { app-parser(topic(syslog)); };
+            };
+            parser {
+                    syslog-parser(flags(assume-utf8, syslog-protocol));
+                };
+            rewrite(set_rfc5424_strict);
+        } elif {
             filter(f_citrix_netscaler_message);
             parser { 
 {{- if (conv.ToBool (getenv "SC4S_SOURCE_CITRIX_NETSCALER_USEALT_DATE_FORMAT" "no")) }}        
@@ -143,15 +152,6 @@ source s_{{ .port_id }} {
                 );
             };
             rewrite(set_tcp_json);            
-        } elif {
-            filter(f_rfc5424_strict);
-            if {
-                parser { app-parser(topic(syslog)); };
-            };
-            parser {
-                    syslog-parser(flags(assume-utf8, syslog-protocol));
-                };
-            rewrite(set_rfc5424_strict);
         } elif {
             filter(f_rfc5424_bsd_encapsulated);
             parser {
