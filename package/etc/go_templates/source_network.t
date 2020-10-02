@@ -103,6 +103,15 @@ source s_{{ .port_id }} {
                 };
             rewrite(set_rfc5424_strict);
         } elif {
+            filter(f_rfc3164_strict);
+            if {
+                parser { app-parser(topic(syslog)); };
+            };
+            parser {
+                    syslog-parser(time-zone({{- getenv "SC4S_DEFAULT_TIMEZONE" "GMT"}}) flags(assume-utf8, guess-timezone));
+                };
+            rewrite(set_rfc3164_strict);            
+        } elif {
             filter(f_citrix_netscaler_message);
             parser { 
 {{- if (conv.ToBool (getenv "SC4S_SOURCE_CITRIX_NETSCALER_USEALT_DATE_FORMAT" "no")) }}        
@@ -207,7 +216,7 @@ source s_{{ .port_id }} {
                 rewrite(set_rfc3164_json);              
             };
         };
-
+{{- end }}
         rewrite(r_set_splunk_default);
         {{ if eq (getenv "SC4S_USE_REVERSE_DNS" "no") "yes" }}
         if {
