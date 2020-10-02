@@ -146,9 +146,6 @@ source s_{{ .port_id }} {
             parser(p_f5_bigip_message);
             rewrite(set_rfc3164);
         } elif {
-            parser(cisco-parser-ex);
-            rewrite(set_cisco_syslog);
-        } elif {
             filter(f_f5_bigip_irule);
             parser(p_f5_bigip_irule);
             rewrite(set_rfc3164);

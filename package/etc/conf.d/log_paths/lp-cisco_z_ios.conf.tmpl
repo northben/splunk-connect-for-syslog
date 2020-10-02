@@ -32,18 +32,26 @@
 {{- tmpl.Exec "t/source_network.t" $context }}
 
 # General Cisco Syslog and IOS
-filter f_cisco_syslog{
-    match("cisco_syslog", value("fields.sc4s_vendor_product") type(glob));
-};
 rewrite set_cisco_syslog{
     set("cisco_syslog" value("fields.sc4s_syslog_format"));
 };
 filter f_is_cisco_syslog{
-    match("cisco_syslog" value("fields.sc4s_syslog_format"))
+    match("cisco_syslog", value("fields.sc4s_vendor_product") type(glob))
+    or
+    filter(f_cisco_parse_mnemonic)
+    or
+    filter(f_cisco_parse_mnemonic_from_parsed);
 };
 filter f_cisco_parse_mnemonic{
     match(
         '^<(?<PRI>\d+)>(?:[ :]+)?(?<LEGACY_MSGHDR>.*)(?<MESSAGE>%(?<cisco_facility>[A-Z0-9\-\_]+)-(?<cisco_severity>[0-7])-(?<cisco_mnemonic>[^\: ]+).*)'
+        flags(store-matches)
+        value(MESSAGE)
+    )
+};
+filter f_cisco_parse_mnemonic_from_parsed{
+    match(
+        '^(?<MESSAGE>%(?<cisco_facility>[A-Z0-9\-\_]+)-(?<cisco_severity>[0-7])-(?<cisco_mnemonic>[^\: ]+).*)'
         flags(store-matches)
         value(MESSAGE)
     )
@@ -203,6 +211,13 @@ log {
             flags(final);
         };
     };
+
+    if {
+        filter(f_message_format_set);
+        parser(cisco-parser-ex);
+        rewrite(set_cisco_syslog);
+    };
+
     if {
         filter(f_cisco_ace);
         rewrite {
