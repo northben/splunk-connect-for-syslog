@@ -31,7 +31,7 @@ log {
                 format('%a %b %d %H:%M:%S %Y',
                        '%a %b %d %k:%M:%S %Y')
                 template("${.json.LogTimestamp}")
-                time-zone({{- getenv "SC4S_DEFAULT_TIMEZONE" "GMT"}})
+                time-zone({{- getenv "SC4S_DEFAULT_TIMEZONE" "00:00"}})
                 flags(guess-timezone)
                 );
             };
