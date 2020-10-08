@@ -4,7 +4,7 @@
 # license that can be found in the LICENSE-BSD2 file or at
 # https://opensource.org/licenses/BSD-2-Clause
 import random
-
+import pytest
 from jinja2 import Environment
 
 from .sendmessage import *
@@ -373,6 +373,40 @@ def test_checkpoint_splunk_os_nested(
         "{{ mark }} {{ bsd }} {{ host }} time={{ epoch }}|hostname={{ host }}|product=Syslog|ifdir=inbound|loguid={{ host }}{0x0,0x0,0x0,0x0}|origin=10.0.0.0|sequencenum=3|time={{ epoch }}|version=5|default_device_message=<134>ctasd[5665]: Save SenderId lists finished |facility=local use 0|\n"
     )
     message = mt.render(mark="<111>", host=host, bsd=bsd, epoch=epoch)
+
+    sendsingle(message, setup_sc4s[0], setup_sc4s[1][514])
+
+    st = env.from_string(
+        'search _time={{ epoch }} index=netops host="{{ host }}" sourcetype="nix:syslog"'
+    )
+    search = st.render(
+        epoch=epoch, bsd=bsd, host=host, date=date, time=time, tzoffset=tzoffset
+    )
+
+    resultCount, eventCount = splunk_single(setup_splunk, search)
+
+    record_property("host", host)
+    record_property("resultCount", resultCount)
+    record_property("message", message)
+
+    assert resultCount == 1
+
+checkpoint_rfc5424 = [r'{{ mark }}1 {{ iso }}Z {{ host }} CheckPoint 30513 - [action:"Accept"; flags:"18692"; ifdir:"inbound"; ifname:"bond1"; loguid:"{0x5e6b01de,0x42,0x8b1ba995,0xc0000000}"; origin:"a.b.c.d"; time:"1584071134"; version:"1"; __policy_id_tag:"product=VPN-1 & FireWall-1[db_tag={2B1357A0-148C-9D41-8E13-43150189C688};mgmt=fwmgt.xxx.edu;date=1582909094;policy_name=fwcons-fwcl1_Simplified]"; dst:"e.f.g.h"; inzone:"Internal"; origin_sic_name:"myouinfohere"; outzone:"External"; product:"VPN-1 & FireWall-1"; proto:"17"; rule:"1"; rule_uid:"{2548FE8F-60C9-4914-8C28-8B0BC9378B3F}"; s_port:"60131"; service:"53"; service_id:"domain-udp"; src:"a.b.c.d";]']
+@pytest.mark.parametrize("event", checkpoint_rfc5424)
+def test_checkpoint_5424(
+    record_property, setup_wordlist, setup_splunk, setup_sc4s, event
+):
+    host = "{}-{}".format(random.choice(setup_wordlist), random.choice(setup_wordlist))
+
+    dt = datetime.datetime.now()
+    iso, bsd, time, date, tzoffset, tzname, epoch = time_operations(dt)
+
+    # Tune time functions for Checkpoint
+    epoch = epoch[:-7]
+    iso = dt.isoformat()[0:19]
+
+    mt = env.from_string(event + "\n")
+    message = mt.render(mark="<134>", iso=iso, host=host)
 
     sendsingle(message, setup_sc4s[0], setup_sc4s[1][514])
 
